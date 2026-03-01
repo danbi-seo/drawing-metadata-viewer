@@ -19,8 +19,8 @@ export function Viewer() {
         className="flex items-center shrink-0"
         style={{
           height: '48px',
-          padding: '0 16px',
-          gap: '8px',
+          padding: '0 5px',
+          gap: '12px',
           background: '#ffffff',
           borderBottom: '1px solid #f0f0f0',
           boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
@@ -81,7 +81,7 @@ export function Viewer() {
         {/* 사용자 조작 편의를 위한 단축키/가이드 힌트 */}
         <div className="ml-auto">
           <span style={{ fontSize: '11px', color: '#9ca3af', fontWeight: 500 }}>
-            스크롤 : 줌 · 드래그 : 이동
+            스크롤 : 줌 / 드래그 : 이동
           </span>
         </div>
       </div>
