@@ -53,7 +53,7 @@ export function Header() {
       {/* 로고 */}
       <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={() => selectDrawing('00')}>
         <div
-          className="w-9 h-9 flex items-center justify-center overflow-hidden"
+          className="h-10 flex items-center justify-center"
           style={{
             background: '#ffffff',
           }}
