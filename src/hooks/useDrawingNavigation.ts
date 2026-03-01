@@ -3,6 +3,11 @@ import { useDrawingStore } from '../store/drawingStore'
 import { useViewStore } from '../store/viewStore'
 import { getLatestRevision, getAllRevisions } from '../data/selectors'
 
+/**
+ * 도면 탐색 및 상태 변경을 위한 통합 내비게이션 인터페이스입니다.
+ * @description 
+ * 도면/공종/리비전 선택 시 필요한 비즈니스 로직을 통합 처리합니다.
+ */
 export function useDrawingNavigation() {
   const {
     selectedDrawingId,
@@ -17,19 +22,12 @@ export function useDrawingNavigation() {
 
   const { resetView } = useViewStore()
 
-  /**
-   * 도면(건물) 단위 이동
-   * @note 도면이 바뀌면 이전의 줌/팬 상태가 유효하지 않으므로 뷰를 반드시 초기화합니다.
-   */
+  {/* 1. 도면 이동: 도면이 변경되면 캔버스의 확대/위치 값을 초기화 */ }
   const navigateToDrawing = useCallback((drawingId: string) => {
     selectDrawing(drawingId)
     resetView()
   }, [selectDrawing, resetView])
-
-  /**
-   * 공종 선택 및 최신 리비전 자동 연결
-   * @note 사용자 편의를 위해 공종 선택 시 해당 공종의 최신본(Latest)을 자동으로 로드합니다.
-   */
+  {/* 2. 공종 이동: 공종 선택 시 해당 공종의 가장 최신 리비전을 자동으로 로드 */ }
   const navigateToDiscipline = useCallback((disciplineKey: string) => {
     if (!selectedDrawingId) return
 
@@ -40,9 +38,7 @@ export function useDrawingNavigation() {
     if (latest) selectRevision(latest)
   }, [selectedDrawingId, selectDiscipline, selectRevision])
 
-  /**
-   * Region 선택 및 리비전 갱신
-   */
+  {/* 3. 리전(구역) 이동: 특정 구역 선택 시 해당 구역 내 최신 리비전을 자동 로드 */ }
   const navigateToRegion = useCallback((regionKey: string | null) => {
     if (!selectedDrawingId || !selectedDisciplineKey) return
 
@@ -54,10 +50,7 @@ export function useDrawingNavigation() {
     }
   }, [selectedDrawingId, selectedDisciplineKey, selectRegion, selectRevision])
 
-  /**
-   * 이전/다음 리비전 탐색
-   * @description 현재 필터링된 리비전 목록 내에서 순차적으로 이동합니다.
-   */
+  {/* 4. 리비전 이전/다음 탐색: 타임라인 순서에 따라 리비전을 순차적으로 이동 */ }
   const navigateToPrevRevision = useCallback(() => {
     if (!selectedDrawingId || !selectedDisciplineKey || !selectedRevision) return
 
@@ -86,14 +79,11 @@ export function useDrawingNavigation() {
     }
   }, [selectedDrawingId, selectedDisciplineKey, selectedRegionKey, selectedRevision, selectRevision])
 
-  // UI 조작 및 버튼 활성 상태 판단
+  // 탐색 가능 상태
   const isAtRoot = selectedDrawingId === '00' || !selectedDrawingId
   const hasDiscipline = !!selectedDisciplineKey
   const hasRevision = !!selectedRevision
 
-  /**
-   * 리비전 이동 가능 여부 판단
-   */
   const canGoPrev = (() => {
     if (!selectedDrawingId || !selectedDisciplineKey || !selectedRevision) return false
     const revisions = getAllRevisions(
@@ -105,6 +95,7 @@ export function useDrawingNavigation() {
     return idx > 0
   })()
 
+  // 현재 리비전 리스트 내에서의 위치를 계산하여 이전/다음 버튼 활성화 여부를 결정
   const canGoNext = (() => {
     if (!selectedDrawingId || !selectedDisciplineKey || !selectedRevision) return false
     const revisions = getAllRevisions(
