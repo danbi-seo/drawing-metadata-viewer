@@ -1,6 +1,7 @@
 import { getDisciplines } from '../../data/selectors'
 import { useDrawingNavigation } from '../../hooks/useDrawingNavigation';
 import { useDrawingStore } from '../../store/drawingStore'
+import { Tooltip } from '../ui/Tooltip';
 
 /**
  * 공종(Discipline) 선택 탭 컴포넌트
@@ -25,6 +26,8 @@ export function DisciplineTab() {
   const {
     selectedDrawingId,
     selectedDisciplineKey,
+    overlayDisciplineKeys,
+    toggleOverlay,
   } = useDrawingStore()
   // 전체 배치도('00') 상태에서는 공종 선택을 제한합니다.
   if (!selectedDrawingId || selectedDrawingId === '00') return null
@@ -43,6 +46,7 @@ export function DisciplineTab() {
       <div className="space-y-0.5">
         {disciplines.map((discipline) => {
           const isSelected = selectedDisciplineKey === discipline.key
+          const isOverlay = overlayDisciplineKeys.includes(discipline.key)
           const color = DISCIPLINE_COLORS[discipline.key] ?? DEFAULT_COLOR
           const latestRevision = discipline.revisions?.find(r => r.isLatest)
 
@@ -119,6 +123,38 @@ export function DisciplineTab() {
                   )}
                 </div>
               </button>
+
+              {/* 오버레이 토글 — 선택된 공종이 아닐 때 */}
+              {!isSelected && selectedDisciplineKey && (
+                <Tooltip content={isOverlay ? '겹쳐보기 해제' : '겹쳐보기'} side="right">
+                  <button
+                    onClick={() => toggleOverlay(discipline.key)}
+                    style={{
+                      padding: '6px',
+                      marginRight: '6px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      background: isOverlay ? '#fef3c7' : 'transparent',
+                      color: isOverlay ? '#d97706' : '#9ca3af',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      transition: 'all 0.15s',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isOverlay) (e.currentTarget as HTMLButtonElement).style.background = '#f3f4f6'
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isOverlay) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <rect x="1" y="4" width="10" height="7" rx="1" stroke="currentColor" strokeWidth="1.2" />
+                      <rect x="3" y="2" width="10" height="7" rx="1" stroke="currentColor" strokeWidth="1.2" opacity="0.45" />
+                    </svg>
+                  </button>
+                </Tooltip>
+              )}
             </div>
           )
         })}

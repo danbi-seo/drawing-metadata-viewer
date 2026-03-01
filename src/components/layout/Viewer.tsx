@@ -1,12 +1,15 @@
 import { OverlayPanel } from '../viewer/OverlayPanel'
 import { useDrawingStore } from '../../store/drawingStore'
 import { DrawingCanvas } from '../viewer/DrawingCanvas'
+import { useViewStore } from '../../store/viewStore'
+import { ToolbarButton } from '../ui/ToolbarButton'
 
 /**
  * 도면 뷰어의 메인 영역 컴포넌트입니다.
  * @description 상단 툴바(상태 표시)와 중앙 캔버스(도면 렌더링), 하단 오버레이 패널을 포함합니다.
  */
 export function Viewer() {
+  const { showPolygon, togglePolygon } = useViewStore()
   const { overlayDisciplineKeys, compareMode, exitCompareMode } = useDrawingStore()
 
   return (
@@ -23,6 +26,17 @@ export function Viewer() {
           boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
         }}
       >
+        {/* 폴리곤 토글 */}
+        <ToolbarButton
+          active={showPolygon}
+          onClick={togglePolygon}
+          title="영역 표시"
+          icon={
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1l5 4-2 7H4L2 5z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+            </svg>
+          }
+        />
 
         {/* 리비전 비교 모드 상태 표시 및 종료 제어 */}
         {compareMode && (
