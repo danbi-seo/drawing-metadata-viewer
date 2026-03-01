@@ -5,6 +5,7 @@ import { getDrawing, getDiscipline } from '../../data/selectors'
 import { CanvasEmptyState } from './CanvasEmptyState'
 import { ZoomControls } from './ZoomControls'
 import { DrawingInfo } from './DrawingInfo'
+import { PolygonOverlay } from './PolygonOverlay'
 
 const DRAWINGS_PATH = '/drawings/'
 
@@ -177,12 +178,15 @@ export function DrawingCanvas() {
               </div>
             </div>
           )}
+
+          {/* 폴리곤 SVG 레이어 — imgSize 측정 후에만 렌더 */}
+          {imgSize && <PolygonOverlay imgSize={imgSize} />}
         </div>
       </div>
 
       {/* 인터랙션 레이어 (항상 최상단 유지) */}
-      <ZoomControls scale={scale} onZoomIn={zoomIn} onZoomOut={zoomOut} />
+      < ZoomControls scale={scale} onZoomIn={zoomIn} onZoomOut={zoomOut} />
       <DrawingInfo />
-    </div>
+    </div >
   )
 }
