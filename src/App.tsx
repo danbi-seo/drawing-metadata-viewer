@@ -1,14 +1,15 @@
-import './App.css'
+import { Header } from './components/layout/Header'
+import { Sidebar } from './components/layout/Sidebar'
+import { Viewer } from './components/layout/Viewer'
 
-function App() {
-
+export default function App() {
   return (
-    <>
-      <div className="text-red-500 text-3xl">
-        Test
+    <div className="h-screen flex flex-col bg-gray-50 text-gray-800 overflow-hidden font-sans">
+      <Header />
+      <div className="flex-1 flex relative overflow-hidden">
+        <Sidebar />
+        <Viewer />
       </div>
-    </>
+    </div>
   )
 }
-
-export default App

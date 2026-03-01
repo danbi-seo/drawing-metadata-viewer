@@ -50,6 +50,7 @@ export function Header() {
         boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)',
       }}
     >
+      {/* 로고 */}
       <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={() => selectDrawing('00')}>
         <div
           className="w-9 h-9 flex items-center justify-center overflow-hidden"
